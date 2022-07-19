@@ -1,0 +1,22 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "code": "ELIFECYCLE",
+    "errno": "ENOENT",
+    "syscall": "spawn",
+    "file": "sh",
+    "pkgid": "backend@1.0.0",
+    "stage": "build",
+    "script": "tsc && tsoa spec",
+    "pkgname": "backend",
+    "err": {
+      "name": "pnpm",
+      "message": "backend@1.0.0 build: `tsc && tsoa spec`\nspawn ENOENT",
+      "code": "ELIFECYCLE",
+      "stack": "pnpm: backend@1.0.0 build: `tsc && tsoa spec`\nspawn ENOENT\n    at ChildProcess.<anonymous> (/usr/local/lib/node_modules/pnpm/dist/pnpm.cjs:93448:22)\n    at ChildProcess.emit (node:events:527:28)\n    at maybeClose (node:internal/child_process:1090:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:302:5)"
+    }
+  },
+  "2 warn pnpm:global": " Local package.json exists, but node_modules missing, did you mean to install?"
+}

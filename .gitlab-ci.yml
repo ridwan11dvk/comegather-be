@@ -1,0 +1,50 @@
+stages:
+  - build
+  - deploy
+
+.base-build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    IMAGE_NAME: "$CI_REGISTRY_IMAGE"
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker build -t "$IMAGE_NAME" .
+    - docker push "$IMAGE_NAME"
+
+build-develop:
+  only:
+    refs:
+      - develop
+  extends: .base-build
+  variables:
+    IMAGE_NAME: "$CI_REGISTRY_IMAGE:dev"
+
+.base-deploy:
+  stage: deploy
+  image: docker:latest
+  variables:
+    IMAGE_NAME: "$CI_REGISTRY_IMAGE"
+    DEPLOYMENT_DIR: "backend"
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - ssh -o StrictHostKeyChecking=no $VM_USER@$HOST_IP "echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY"
+    - ssh -o StrictHostKeyChecking=no $VM_USER@$HOST_IP "docker pull $IMAGE_NAME"
+    - ssh -o StrictHostKeyChecking=no $VM_USER@$HOST_IP "cd $DEPLOYMENT_DIR && docker-compose up -d"
+
+deploy-develop:
+  only:
+    refs:
+      - develop
+  extends: .base-deploy
+  variables:
+    IMAGE_NAME: "$CI_REGISTRY_IMAGE:dev"
+    DEPLOYMENT_DIR: "backend"

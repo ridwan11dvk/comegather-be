@@ -1,0 +1,9 @@
+[{
+  "script": "dist/src/main.js",
+  "name": "cmplt-main",
+  "exec_mode": "cluster",
+  "instances": "max",
+  "environtment": {
+    "SECRET_ACCESS_KEY": "e444537ea9636a3f5a94135ec326e46866b93fc12746ba407f30de16efafb2f2d750592974cd3fe9c231a7df02192250a689"
+  }
+}]

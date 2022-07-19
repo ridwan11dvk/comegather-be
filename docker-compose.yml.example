@@ -1,0 +1,36 @@
+version: '3'
+services:
+  app:
+    container_name: complt_backend
+    volumes:
+      - public:/app/dist/public:rw
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    entrypoint: bash /app/scripts/run_server.sh
+    restart: always
+    ports:
+      - 5000:5000
+    image: complt_backend:latest
+  redis:
+    image: redis
+    ports:
+      - 6380:6379
+    restart: always
+    volumes:
+      - redis:/data
+  postgres:
+    image: postgres:13-alpine
+    ports:
+      - 5433:5432
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+volumes:
+  public:
+  redis:
+  postgres:

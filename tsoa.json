@@ -1,0 +1,169 @@
+{
+  "entryFile": "src/main.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controller/*.ts"],
+  "routes": {
+    "routesDir": "build",
+    "authenticationModule": "./src/interface/rest/middleware/User.ts"
+  },
+  "spec": {
+    "basePath" : "api/v1",
+    "outputDirectory": "docs",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "accessToken" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    },
+    "specMerging" : "recursive",
+    "spec" : {
+      "paths" : {
+        "/files" : {
+          "post" : {
+            "requestBody":
+              {
+                "required" : true,
+                "content" : {
+                  "multipart/form-data" : {
+                    "schema" :  {
+                      "properties" : {
+                        "file" : {
+                          "type" : "string",
+                          "format": "binary"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "responses" : {
+                "200" : {
+                  "description": "Ok",
+                  "content": {
+                    "application/json" : {
+                      "schema" :{
+                        "properties" :{
+                          "url" :{
+                            "type" : "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+          }
+        },
+        "/users/profile" : {
+          "get" : {
+            "security" : [
+              {
+                "accessToken" : []
+              }
+            ],
+              "responses" : {
+                "200" : {
+                  "description": "Ok",
+                  "content": {
+                    "application/json" : {
+                      "schema" :{
+                        "properties" :{
+                          "id" :{
+                            "type" : "number"
+                          },
+                          "username" : {
+                            "type" : "string"
+                          },
+                          "fullname" : {
+                            "type" : "string"
+                          },
+                          "email" : {
+                            "type" : "string"
+                          },
+                          "lastLogin" : {
+                            "type" :"string",
+                            "format": "datetime"
+                          },
+                          "hasImage" : {
+                            "type" : "object",
+                            "properties" : {
+                              "fileName" : {
+                                "type" : "string"
+                              },
+                              "mimeType" : {
+                                "type" : "string"
+                              },
+                              "url" : {
+                                "type" : "string"
+                              },
+                              "size" : {
+                                "type" : "number"
+                              },
+                              "extension" : {
+                                "type" : "string"
+                              }
+                            }
+                          },
+                          "locatedOn" : {
+                            "type": "object",
+                            "properties": {
+                              "city" : {
+                                "type" : "string"
+                              },
+                              "stateProvince" : {
+                                "type" : "string"
+                              },
+                              "country" : {
+                                "type" : "string"
+                              },
+                              "postalCode" : {
+                                "type" : "number"
+                              }
+                            }
+                          },
+                          "interestedIn" : {
+                            "type" : "array",
+                            "items" : {
+                              "type": "object",
+                              "properties": {
+                                "name" : {
+                                  "type" : "string"
+                                },
+                                "description" : {
+                                  "type" : "string"
+                                },
+                                "imageId" : {
+                                  "type" : "number"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+          }
+        },
+        "/users/signout" : {
+          "post" : {
+            "tags": [ "User" ],
+            "security" : [
+              {
+                "accessToken" : []
+              }
+            ],
+              "responses" : {
+                "200" : {
+                  "description": "Ok"
+                }
+              }
+          }
+        }
+      }
+    }
+  }
+}
